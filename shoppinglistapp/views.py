@@ -1,3 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import Item
+from .forms import ItemForm
 
-# Create your views here.
+
+def item_list(request):
+    items = Item.objects.all()
+    return render(request, 'shoppinglistapp/item_list.html', {'items':items})
+
+
+def add_item(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('item_list')
+    else:
+        form = ItemForm()
+    return render(request, 'shoppinglistapp/add_item.html', {'form': form})
